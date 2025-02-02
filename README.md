@@ -1,44 +1,45 @@
-﻿# Modular Monolith Architecture Server Template
+# PUT IMAGE HERE
 
-## Overview
+## $\color{#FFE338}\textsf{\kern{0.2cm}\normalsize POSTMAN LINK}$
 
-This repository provides a comprehensive template for setting up a server using Express, along with all the necessary dependencies to ensure a smooth development experience. The template is designed to enforce the modular monolith architecture, promoting a clean and maintainable codebase.
+[Click Here] 
 
-## Features
+## Postman Environment Variable
 
-- **Express Setup**: Comes pre-configured with Express, a popular Node.js web application framework, to handle HTTP requests.
-- **Modular Monolith Architecture**: Organized into modules to maintain a clean and scalable codebase.
-- **Dependency Management**: Includes all necessary dependencies for a robust server setup.
-- **Prettier ESLint Integration**: Integrates Prettier ESLint for code formatting and linting, ensuring code quality and consistency.
+```json
+Variable: base-url-v1,
+Type: default,
+initial_value:"localhost:5001/api/v1",
+current_value:"localhost:5001/api/v1"
+```
 
-## Getting Started
+2. Extract the Access Token:
 
-### Prerequisites
+- In the `Tests/Scripts` tab of the `super-admin/login`,`refresh` request, add the following script to extract the access token from the response headers and save it to an environment variable:
 
-- Node.js (v20.0.0 or later)
-- npm (v8.0.0 or later)
+```javascript
+// Extract the access token from the response headers
+const accessToken = pm.response.headers.get("Authorization");
 
-### Installation
+// Save the access token to an environment variable
+pm.environment.set("accessToken", accessToken);
+```
 
-1. Clone the repository:
-   git clone https://github.com/yourusername/server-template.git
+3. Set the Access Token for Subsequent Requests:
 
-2. Navigate to the project directory:
-   cd server-template
+- For each subsequent request, go to the Headers tab and add a new header:
+- - Key: Authorization
+- - Value: {{accessToken}}
+- This will automatically use the access token stored in the environment variable for all subsequent requests.
 
-3. Install dependencies:
-   npm install
+4. Remove AccessToken from Postman env
 
-### Running the Server
+- In the `Tests/Scripts` tab of the `super-admin/logout` request, add the following script to remove the access token from the environment variable:
 
-To start the server, run:
-
-npm start
-
-The server will be accessible at `http://localhost:5000`.
-
-### Prettier ESLint Integration
-
-This template integrates Prettier ESLint, a tool for formatting and linting your code. To set it up, follow these steps:
-
-- Install Prettier ESLint extension and restart your VScode
+```javascript
+// Check if the response status is 200 (OK)
+if (pm.response.code === 200) {
+  // Remove the access token from the environment variable
+  pm.environment.unset("accessToken");
+}
+```
