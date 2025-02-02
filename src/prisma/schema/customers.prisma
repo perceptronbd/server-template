@@ -1,0 +1,13 @@
+model customers {
+  customer_id  String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  password     String
+  phone        String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  rentals      rentals[]
+  escrow       escrow[]
+  cart         Cart[]
+}

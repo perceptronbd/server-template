@@ -1,0 +1,32 @@
+model rentals {
+  rental_id        String   @id @default(uuid())
+  customer_id      String
+  clothing_id      String
+  seller_id        String
+  address          String
+  rent_start       DateTime
+  rent_end         DateTime
+  rental_period    DateTime
+  return_date      DateTime
+  rental_fee       Decimal
+  security_deposit Decimal
+  status           rental_status
+  penalty_amount   Decimal
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  customer customers @relation(fields: [customer_id], references: [customer_id])
+  clothing clothes   @relation(fields: [clothing_id], references: [clothing_id])
+  seller   sellers   @relation(fields: [seller_id], references: [seller_id])
+  escrow   escrow[]
+  orders   orders[]
+  payments payments[]
+  disputes disputes[]
+}
+
+enum rental_status {
+  ordered
+  delivered
+  returned
+  penalized
+}

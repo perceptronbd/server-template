@@ -1,0 +1,17 @@
+model disputes {
+  dispute_id       String   @id @default(uuid())
+  rental_id        String
+  description      String
+  status           dispute_status
+  resolution_notes String
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  rental rentals @relation(fields: [rental_id], references: [rental_id])
+}
+
+enum dispute_status {
+  open
+  resolved
+  closed
+}

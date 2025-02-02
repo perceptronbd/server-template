@@ -1,0 +1,5 @@
+model category {
+  category_id   String   @id @default(uuid())
+  category_name String
+  clothes       clothes[]
+}

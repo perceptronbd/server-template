@@ -1,0 +1,24 @@
+model payments {
+  payment_id      String   @id @default(uuid())
+  rental_id       String
+  order_id        String
+  amount          Decimal
+  transaction_id  String
+  payment_method  payment_method
+  status          payment_status
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  rental rentals @relation(fields: [rental_id], references: [rental_id])
+  order  orders  @relation(fields: [order_id], references: [order_id])
+}
+
+enum payment_method {
+  stripe
+  razorpay
+}
+
+enum payment_status {
+  completed
+  failed
+}

@@ -1,0 +1,10 @@
+model Cart {
+  clothing_id String
+  customer_id String
+  created_at  DateTime @default(now())
+
+  customer customers @relation(fields: [customer_id], references: [customer_id])
+  clothing clothes   @relation(fields: [clothing_id], references: [clothing_id])
+
+  @@id([clothing_id, customer_id]) // Composite Primary Key
+}

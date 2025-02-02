@@ -1,0 +1,19 @@
+model orders {
+  order_id       String   @id @default(uuid())
+  rental_id      String
+  amount         Decimal
+  transaction_id String
+  status         order_status
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  rental   rentals   @relation(fields: [rental_id], references: [rental_id])
+  payments payments[]
+}
+
+enum order_status {
+  pending
+  approved
+  shipped
+  received
+}

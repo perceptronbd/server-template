@@ -1,0 +1,21 @@
+model clothes {
+  clothing_id            String   @id @default(uuid())
+  seller_id              String
+  name                   String
+  description            String
+  category_id            String
+  size                   String
+  rental_fee             Decimal
+  cloth_security_deposit Decimal
+  images                 String
+  availability           Boolean
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
+
+  seller   sellers   @relation(fields: [seller_id], references: [seller_id])
+  category category  @relation(fields: [category_id], references: [category_id])
+  rentals  rentals[]
+  cart     Cart[]
+}
+
+

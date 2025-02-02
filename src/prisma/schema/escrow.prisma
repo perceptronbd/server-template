@@ -1,0 +1,20 @@
+model escrow {
+  escrow_id        String   @id @default(uuid())
+  rental_id        String
+  customer_id      String
+  seller_id        String
+  security_deposit Decimal
+  status           escrow_status
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  rental   rentals   @relation(fields: [rental_id], references: [rental_id])
+  customer customers @relation(fields: [customer_id], references: [customer_id])
+  seller   sellers   @relation(fields: [seller_id], references: [seller_id])
+}
+
+enum escrow_status {
+  pending
+  refunded
+  penalized
+}
