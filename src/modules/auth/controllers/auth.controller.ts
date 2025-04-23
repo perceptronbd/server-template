@@ -14,8 +14,15 @@ const login = async (req: Request, res: Response) => {
   });
 
   setCookie(res, "refreshToken", refreshToken);
+  res.setHeader("Access-Control-Expose-Headers", "Authorization");
   res.setHeader("Authorization", `Bearer ${accessToken}`);
-  sendResponse(res, user, HTTP_STATUS_CODES.OK, "Login successful!");
+  res.status(HTTP_STATUS_CODES.OK).json({
+    success: true,
+    code: HTTP_STATUS_CODES.OK,
+    data: user,
+    message: "Logged in successfully!",
+    cookieSet: true,
+  });
 };
 
 const logout = async (_: Request, res: Response) => {

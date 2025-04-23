@@ -7,18 +7,22 @@ import { validatePassword } from "@/helpers/auth.helper";
 import { generateTokens } from "@/utils/token.util";
 import { authModels } from "../models/auth.model";
 import { AppError } from "@/types/error.type";
+import { TPermissions } from "../types";
 import jwt from "jsonwebtoken";
 
 const login = async ({ email, password, rememberMe }: TLoginRequest) => {
   const user = await authModels.getUserByEmail(email);
 
   if (!user) {
-    throw new AppError(HTTP_STATUS_CODES.UNAUTHORIZED, "Invalid password");
+    throw new AppError(
+      HTTP_STATUS_CODES.UNAUTHORIZED,
+      "user with this email does not exist!",
+    );
   }
 
   const isPasswordValid = await validatePassword(password, user.password);
   if (!isPasswordValid) {
-    throw new AppError(HTTP_STATUS_CODES.UNAUTHORIZED, "Invalid password");
+    throw new AppError(HTTP_STATUS_CODES.UNAUTHORIZED, "Invalid password!");
   }
 
   const tokens = generateTokens({
@@ -33,8 +37,11 @@ const login = async ({ email, password, rememberMe }: TLoginRequest) => {
     refreshToken: tokens.refreshToken,
     user: {
       id: user.id,
+      firstName: user.firstName,
+      phone: user.phone,
       email: user.email,
       roles: user.policy.roles,
+      branches: user.branches,
     },
   };
 };
@@ -51,7 +58,11 @@ const refreshTokens = async (refreshToken: string, rememberMe: boolean) => {
     const decoded = jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET as string,
-    ) as jwt.JwtPayload;
+    ) as {
+      id: string;
+      email: string;
+      roles: { roles: string[]; permissions: TPermissions[] };
+    };
 
     const { id, email, roles } = decoded;
 
