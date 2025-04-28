@@ -11,5 +11,8 @@ data/diagnostic.data/
 data/journal
 data
 uploads
+.trae
+# Docker
+postgres_data
 
 
