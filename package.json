@@ -9,7 +9,7 @@
     "test:changed": "jest --onlyChanged",
     "build": "tsc --project tsconfig.json && tsc-alias",
     "start": "cross-env NODE_ENV=production node dist/server.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon --watch src --exec ts-node -r tsconfig-paths/register src/server.ts",
+    "start:dev": "cross-env NODE_ENV=development nodemon --legacy-watch --watch src/server.ts --exec ts-node -r tsconfig-paths/register src/server.ts",
     "prepare": "husky || true",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -21,7 +21,6 @@
   "license": "ISC",
   "description": "Modular Monolithic Server Side Application Template",
   "dependencies": {
-    "@prisma/client": "^6.4.1",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cloudinary": "^2.5.1",
@@ -30,6 +29,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.14.0",
     "multer": "^1.4.5-lts.1",
     "node-cache": "^5.1.2",
     "qrcode": "^1.5.4",
@@ -64,7 +64,6 @@
     "prettier": "^3.5.2",
     "prettier-plugin-organize-imports": "^4.1.0",
     "prettier-plugin-sort-imports": "^1.8.6",
-    "prisma": "^6.4.1",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
@@ -93,8 +92,5 @@
   },
   "engines": {
     "node": ">=20.0.0"
-  },
-  "prisma": {
-    "schema": "./src/prisma/schema/"
   }
 }

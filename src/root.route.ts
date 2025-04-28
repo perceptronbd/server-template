@@ -1,5 +1,4 @@
 import { authenticateJWT } from "@/middlewares/auth.middleware";
-import { authRoutes } from "@modules/auth/routes/auth.route";
 import { Router } from "express";
 
 const router = Router();
@@ -8,7 +7,7 @@ const moduleRoutes = [
   {
     protected: false,
     path: "/auth",
-    module: authRoutes,
+    module: () => {},
   },
 ];
 

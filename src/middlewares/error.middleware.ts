@@ -1,8 +1,9 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { HTTP_STATUS_CODES } from "../utils/http-status-codes";
 import { AppError, ErrorResponse } from "../types/error.type";
 import { NextFunction, Request, Response } from "express";
 import { errorHandler } from "../handlers/error.handler";
+import { TMongooseError } from "@/utils/mongoose.util";
+import { Error as MongooseError } from "mongoose";
 import { STATUS_CODES } from "http";
 import { ZodError } from "zod";
 
@@ -24,8 +25,12 @@ export const errorMiddleware = (
     errorHandler.appError(error, response);
   } else if (error instanceof ZodError) {
     errorHandler.zodError(error, response);
-  } else if (error instanceof PrismaClientKnownRequestError) {
-    errorHandler.prismaError(error, response);
+  } else if (
+    error instanceof MongooseError.CastError ||
+    error instanceof MongooseError.ValidationError ||
+    error instanceof MongooseError.DocumentNotFoundError
+  ) {
+    errorHandler.mongooseError(error as TMongooseError, response);
   } else if (error instanceof Error) {
     errorHandler.generalError(error, response);
   }

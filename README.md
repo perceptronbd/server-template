@@ -1,6 +1,6 @@
 # TypeScript Express Server Template
 
-A modern server template built with Express.js, TypeScript, PostgreSQL, and Prisma, featuring hot-reloading for development.
+A modern server template built with Express.js, TypeScript, and MongoDB, featuring hot-reloading for development.
 
 ## Prerequisites
 
@@ -30,7 +30,7 @@ A modern server template built with Express.js, TypeScript, PostgreSQL, and Pris
    ```
    - This starts:
      - Express app on `http://localhost:5001`
-     - PostgreSQL on port 5432
+     - MongoDB on port 27017
 
 ---
 
@@ -39,7 +39,7 @@ A modern server template built with Express.js, TypeScript, PostgreSQL, and Pris
 ### Start the app
 
 ```bash
-docker-compose up  # Use `-d` to run in background
+ docker-compose up  # Use `-d` to run in background
 ```
 
 ### Stop the app
@@ -53,24 +53,23 @@ docker-compose down
 - Edit files locally → changes auto-refresh in the container
 - TypeScript compilation happens automatically
 
-### Database Management with Prisma
+### Database Management with MongoDB
 
-1. **Generate Prisma Client**:
-
-   ```bash
-   docker-compose exec app npx prisma generate
-   ```
-
-2. **Run Migrations**:
+1. **Connect to MongoDB Shell**:
 
    ```bash
-   docker-compose exec app npx prisma migrate dev
+   docker-compose exec mongodb mongosh
    ```
 
-3. **View Database with Prisma Studio**:
+2. **Seed Database** (if available):
+
    ```bash
-   docker-compose exec app npx prisma studio
+   npm run seed
    ```
+
+3. **View Database with MongoDB Compass**:
+   - Connect using the MongoDB connection string from your `.env` file
+   - Default URL: `mongodb://localhost:27017`
 
 ### Add a new dependency
 
@@ -84,11 +83,10 @@ docker-compose down
 
 ## Access Services
 
-| Service       | URL/Port                |
-| ------------- | ----------------------- |
-| Express App   | `http://localhost:5001` |
-| PostgreSQL    | Port: 5432              |
-| Prisma Studio | `http://localhost:5555` |
+| Service     | URL/Port                |
+| ----------- | ----------------------- |
+| Express App | `http://localhost:5001` |
+| MongoDB     | Port: 27017             |
 
 ---
 
@@ -138,9 +136,10 @@ docker-compose down
 
 - **Database connection issues**:
 
-  - Check if PostgreSQL container is running
+  - Check if MongoDB container is running
   - Verify database credentials in `.env`
-  - Use `db` as the hostname in your connection string
+  - Use `mongodb` as the hostname in your connection string
+  - Default connection string format: `mongodb://username:password@mongodb:27017/database`
 
 - **Hot-reload not working**:
 
@@ -148,7 +147,7 @@ docker-compose down
   - Check volume mounts in `docker-compose.yml`
 
 - **Port conflicts**:
-  - Stop local PostgreSQL service if running
+  - Stop local MongoDB service if running
   - Modify port mappings in `docker-compose.yml`
 
 ---

@@ -1,11 +1,11 @@
 import {
-  DEFAULT_PRISMA_ERROR,
-  PRISMA_ERROR_MAP,
-  TPrismaErrorCode,
-} from "@/utils/prisma.util";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+  DEFAULT_MONGOOSE_ERROR,
+  MONGOOSE_ERROR_MAP,
+  TMongooseError,
+} from "@/utils/mongoose.util";
 import { HTTP_STATUS_CODES } from "../utils/http-status-codes";
 import { AppError, ErrorResponse } from "../types/error.type";
+import { Error as MongooseError } from "mongoose";
 import { ZodError } from "zod";
 
 export const appError = (error: AppError, response: ErrorResponse) => {
@@ -49,28 +49,38 @@ export const generalError = (error: Error, response: ErrorResponse) => {
     process.env.NODE_ENV === "development" ? { stack: error.stack } : undefined;
 };
 
-export const prismaError = (
-  error: PrismaClientKnownRequestError,
+export const mongooseError = (
+  error: TMongooseError,
   response: ErrorResponse,
 ) => {
-  // Look up the error code in the mapping or use the default
+  // Determine the error type and look up in the mapping or use default
+  const errorType = error.name as keyof typeof MONGOOSE_ERROR_MAP;
   const { code, message } =
-    PRISMA_ERROR_MAP[error.code as TPrismaErrorCode] || DEFAULT_PRISMA_ERROR;
+    MONGOOSE_ERROR_MAP[errorType] || DEFAULT_MONGOOSE_ERROR;
 
   // Set the response properties
   response.code = code;
   response.message = message;
 
   // Add details in development mode
-  response.details =
-    process.env.NODE_ENV === "development"
-      ? { code: error.code, meta: error.meta }
-      : undefined;
+  if (process.env.NODE_ENV === "development") {
+    response.details = {
+      name: error.name,
+      reason: error.message,
+      // Add validation errors if present
+      ...(error instanceof MongooseError.ValidationError && {
+        validationErrors: Object.keys(error.errors).map((key) => ({
+          field: key,
+          message: error.errors[key].message,
+        })),
+      }),
+    };
+  }
 };
 
 export const errorHandler = {
   appError,
   zodError,
   generalError,
-  prismaError,
+  mongooseError,
 };

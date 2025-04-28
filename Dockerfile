@@ -3,19 +3,15 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files and prisma schema
+# Copy package files
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY src/prisma ./src/prisma/
 
 # Install dependencies
 RUN npm install
 
 # Copy source code
 COPY . .
-
-# Generate Prisma client
-RUN npx prisma generate
 
 # Build TypeScript code
 RUN npm run build
@@ -29,7 +25,6 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/src/prisma ./src/prisma
 
 # Expose port
 EXPOSE 5001
@@ -42,12 +37,6 @@ WORKDIR /app
 # Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
-
-# Copy prisma schema
-COPY src/prisma ./src/prisma/
-
-# Generate Prisma client
-RUN npx prisma generate
 
 # Expose port
 EXPOSE 5001
